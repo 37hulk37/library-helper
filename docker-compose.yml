@@ -1,6 +1,14 @@
 version: '3.8'
 
 services:
+  server:
+    container_name: library-helper
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
   db:
     container_name: db
     image: postgres:15-alpine

@@ -1,4 +1,4 @@
-package com.hulk.library.request;
+package com.hulk.library.utils.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BorrowBookRequest {
-    private Long readerId;
-    private Long bookId;
-    private Integer until;
+public class NewReaderRequest {
+    private String name;
 }

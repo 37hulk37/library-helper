@@ -9,7 +9,7 @@ import com.hulk.library.entity.Event;
 import com.hulk.library.entity.Reader;
 import com.hulk.library.exception.BadRequestException;
 import com.hulk.library.exception.NotFoundException;
-import com.hulk.library.request.BorrowBookRequest;
+import com.hulk.library.utils.request.BorrowBookRequest;
 import com.hulk.library.service.EventService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
@@ -39,7 +39,7 @@ public class EventServiceImpl implements EventService {
                 reader,
                 book,
                 now,
-                DateUtils.addDays(now, request.getUntil())
+                DateUtils.addDays(now, request.getDays())
         ));
 
         return new EventInfo(event);
@@ -47,7 +47,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventInfo handInBook(Long id) {
+    public EventInfo returnBook(Long id) {
         if ( !eventRepository.existsById(id)) {
             throw new BadRequestException("Event with name " + id + " not exists");
         }

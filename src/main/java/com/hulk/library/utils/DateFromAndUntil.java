@@ -1,4 +1,4 @@
-package com.hulk.library.request;
+package com.hulk.library.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewReaderRequest {
-    private String name;
+public class DateFromAndUntil {
+    private String from;
+    private String until;
 }

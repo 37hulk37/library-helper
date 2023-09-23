@@ -2,7 +2,7 @@ package com.hulk.library.controller;
 
 import com.hulk.library.dto.ReaderInfo;
 import com.hulk.library.entity.Reader;
-import com.hulk.library.request.NewReaderRequest;
+import com.hulk.library.utils.request.NewReaderRequest;
 import com.hulk.library.service.ReaderService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 

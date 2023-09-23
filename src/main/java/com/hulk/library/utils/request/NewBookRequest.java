@@ -1,4 +1,4 @@
-package com.hulk.library.request;
+package com.hulk.library.utils.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

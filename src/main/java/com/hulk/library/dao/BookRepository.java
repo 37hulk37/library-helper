@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long> {
     boolean existsBookByName(String name);
 
+    @Query("select b.name from Book b where b.id = :id")
+    String getBookNameById(Long id);
+
     @Query("select b from Book b " +
             "join Event e on b.id = e.book.id " +
             "where e.from >= :from " +

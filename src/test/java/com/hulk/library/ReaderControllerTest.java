@@ -7,7 +7,7 @@ import com.hulk.library.entity.Book;
 import com.hulk.library.entity.Event;
 import com.hulk.library.entity.Reader;
 import com.hulk.library.exception.NotFoundException;
-import com.hulk.library.utils.request.NewBookRequest;
+import com.hulk.library.utils.request.NewReaderRequest;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class BookControllerTest {
+public class ReaderControllerTest {
     @Autowired
     private BookRepository bookRepository;
     @Autowired
@@ -65,140 +65,119 @@ class BookControllerTest {
 
     @Order(1)
     @Test
-    void createBook() throws Exception {
-        var newBook = new NewBookRequest(
-                "C++",
-                "Bjarne Stroustrup",
-                "IT",
-                "..."
-        );
+    void createReader() throws Exception {
+        var newReader = new NewReaderRequest("Bjarne Stroustrup");
 
-        mockMvc.perform(post("/api/books")
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .content(objectMapper.writeValueAsString(newBook))
-        )
+        mockMvc.perform(post("/api/readers")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(newReader))
+                )
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON_VALUE),
                         jsonPath("id").isNotEmpty(),
-                        jsonPath("name").value(newBook.getName()),
-                        jsonPath("author").value(newBook.getAuthor()),
-                        jsonPath("topic").value(newBook.getTopic()),
-                        jsonPath("description").value(newBook.getDescription())
+                        jsonPath("name").value(newReader.getName())
                 );
     }
 
     @Order(2)
     @Test
-    void createBookWithNameAlreadyExist() throws Exception {
-        var name = bookRepository.findById(1L)
-                .orElseThrow(() -> new NotFoundException("Book not found"))
+    void createReaderWithNameAlreadyExist() throws Exception {
+        var name = readerRepository.findById(1L)
+                .orElseThrow(() -> new NotFoundException(""))
                 .getName();
 
-        var newBook = new NewBookRequest(
-                name,
-                "Bjarne Stroustrup",
-                "IT",
-                "..."
-        );
+        var newReader = new NewReaderRequest(name);
 
-        mockMvc.perform(post("/api/books")
+        mockMvc.perform(post("/api/readers")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsBytes(newBook))
+                        .content(objectMapper.writeValueAsBytes(newReader))
                 )
                 .andExpect(status().isBadRequest());
     }
 
     @Order(3)
     @Test
-    void updateBook() throws Exception {
-        var book = bookRepository.findById(1L)
-                .orElseThrow(() -> new NotFoundException("Book not found"));
+    void updateReader() throws Exception {
+        var reader = readerRepository.findById(1L)
+                .orElseThrow(() -> new NotFoundException("Reader not found"));
 
-        book.setAuthor("Graydon Hoare");
+        reader.setName("Graydon Hoare");
 
-        mockMvc.perform(put("/api/books")
+        mockMvc.perform(put("/api/readers")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(book))
+                        .content(objectMapper.writeValueAsString(reader))
                 )
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON_VALUE),
-                        jsonPath("id").value(book.getId()),
-                        jsonPath("name").value(book.getName()),
-                        jsonPath("author").value(book.getAuthor()),
-                        jsonPath("topic").value(book.getTopic()),
-                        jsonPath("description").value(book.getDescription())
+                        jsonPath("id").value(reader.getId()),
+                        jsonPath("name").value(reader.getName())
                 );
     }
 
     @Order(4)
     @Test
-    void updateBookWithNameAlreadyExist() throws Exception {
-        var book = bookRepository.findById(1L)
-                .orElseThrow(() -> new NotFoundException("Book not found"));
-        var anotherBook = bookRepository.save(new Book(
-                "Kotlin",
-                "Jetbrains",
-                "IT",
-                "..."
-        ));
+    void updateReaderWithNameAlreadyExist() throws Exception {
+        var reader = readerRepository.findById(1L)
+                .orElseThrow(() -> new NotFoundException("Reader not found"));
+        var anotherReader = readerRepository.save(new Reader("Robert Griesemer"));
 
-        book.setName(anotherBook.getName());
+        reader.setName(anotherReader.getName());
 
-        mockMvc.perform(put("/api/books")
+        mockMvc.perform(put("/api/readers")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsBytes(book))
+                        .content(objectMapper.writeValueAsBytes(reader))
                 )
                 .andExpect(status().isBadRequest());
     }
 
     @Order(5)
     @Test
-    void findBookById() throws Exception {
-        var book = bookRepository.findById(1L)
-                .orElseThrow(() -> new NotFoundException("Book not found"));
+    void findReaderById() throws Exception {
+        var reader = readerRepository.findById(1L)
+                .orElseThrow(() -> new NotFoundException("Reader not found"));
 
-        mockMvc.perform(get("/api/books/{id}", book.getId()))
+        mockMvc.perform(get("/api/readers/{id}", reader.getId()))
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("id").value(book.getId()),
-                        jsonPath("name").value(book.getName()),
-                        jsonPath("author").value(book.getAuthor()),
-                        jsonPath("topic").value(book.getTopic()),
-                        jsonPath("description").value(book.getDescription())
+                        jsonPath("id").value(reader.getId()),
+                        jsonPath("name").value(reader.getName())
                 );
     }
 
     @Order(6)
     @Test
-    void findBookById_whenDoesNotExist() throws Exception {
-        mockMvc.perform(get("/api/books/12345"))
+    void findReaderById_whenDoesNotExist() throws Exception {
+        mockMvc.perform(get("/api/readers/12345"))
                 .andExpect(status().isNotFound());
     }
 
     @Order(7)
     @Test
-    void findMostPopularBook() throws Exception {
-        var book = bookRepository.findById(1L)
-                .orElseThrow(() -> new NotFoundException("Book not found"));
-        var reader = readerRepository.save(new Reader("Google"));
+    void findBestReader() throws Exception {
+        var book = bookRepository.save(new Book(
+                "Kotlin",
+                "Jetbrains",
+                "IT",
+                "..."
+        ));
+
+        var reader = readerRepository.findById(1L)
+                .orElseThrow(() -> new NotFoundException("Reader not found"));
 
         var event = borrowAndReturnBook(book, reader);
         MultiValueMap<String, String> params = createQueryParams(event.getFrom(), event.getUntil());
 
-        mockMvc.perform(get("/api/books")
+        mockMvc.perform(get("/api/readers")
                         .params(params)
                 )
                 .andExpectAll(
                         status().isOk(),
                         content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("id").value(book.getId()),
-                        jsonPath("name").value(book.getName()),
-                        jsonPath("author").value(book.getAuthor()),
-                        jsonPath("topic").value(book.getTopic()),
-                        jsonPath("description").value(book.getDescription())
+                        jsonPath("id").value(reader.getId()),
+                        jsonPath("name").value(reader.getName())
                 );
     }
 
@@ -231,3 +210,5 @@ class BookControllerTest {
         return params;
     }
 }
+
+

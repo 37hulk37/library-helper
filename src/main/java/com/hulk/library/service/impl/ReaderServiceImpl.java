@@ -5,13 +5,12 @@ import com.hulk.library.dto.ReaderInfo;
 import com.hulk.library.entity.Reader;
 import com.hulk.library.exception.BadRequestException;
 import com.hulk.library.exception.NotFoundException;
-import com.hulk.library.request.NewReaderRequest;
+import com.hulk.library.utils.request.NewReaderRequest;
 import com.hulk.library.service.ReaderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 @Service
@@ -34,15 +33,16 @@ public class ReaderServiceImpl implements ReaderService {
     @Override
     @Transactional
     public ReaderInfo updateReader(Reader request) {
-        if (repository.existsReaderByName(request.getName())) {
+        if (repository.existsReaderByName(request.getName()) &&
+                !request.getName().equals(repository.getReaderNameById(request.getId()))) {
             throw new BadRequestException("Reader with name " + request.getName() + " already exists");
         }
 
-        if (repository.existsById(request.getId())) {
-            throw new NotFoundException("Reader with id " + request.getId() + " not fount");
+        if (!repository.existsById(request.getId())) {
+            throw new NotFoundException("Reader with id " + request.getId() + " not found");
         }
 
-        var reader = repository.save(new Reader(request.getName()));
+        var reader = repository.save(request);
 
         return new ReaderInfo(reader);
     }

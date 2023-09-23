@@ -2,10 +2,8 @@ package com.hulk.library.service;
 
 import com.hulk.library.dto.ReaderInfo;
 import com.hulk.library.entity.Reader;
-import com.hulk.library.request.NewReaderRequest;
+import com.hulk.library.utils.request.NewReaderRequest;
 
-import javax.xml.crypto.Data;
-import java.sql.Timestamp;
 import java.util.Date;
 
 public interface ReaderService {

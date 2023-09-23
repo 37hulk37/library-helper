@@ -2,8 +2,8 @@ package com.hulk.library.controller;
 
 import com.hulk.library.dto.EventInfo;
 import com.hulk.library.entity.Event;
-import com.hulk.library.request.HandInBookRequest;
-import com.hulk.library.request.BorrowBookRequest;
+import com.hulk.library.utils.request.ReturnBookRequest;
+import com.hulk.library.utils.request.BorrowBookRequest;
 import com.hulk.library.service.EventService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -20,15 +20,15 @@ public class EventController {
     private final static Logger logger = LoggerFactory.getLogger(BookController.class);
 
     @PostMapping
-    public EventInfo takeBook(@RequestBody BorrowBookRequest request) {
+    public EventInfo borrowBook(@RequestBody BorrowBookRequest request) {
         logger.info("Reader with id " + request.getReaderId() + " take book with id " + request.getBookId());
         return eventService.takeBook(request);
     }
 
     @PutMapping
-    public EventInfo updateReader(@RequestBody HandInBookRequest request) {
-        logger.info("Reader hand in book, event id " + request.getEventId());
-        return eventService.handInBook(request.getEventId());
+    public EventInfo returnBook(@RequestBody ReturnBookRequest request) {
+        logger.info("Reader returned book, event id " + request.getEventId());
+        return eventService.returnBook(request.getEventId());
     }
 
     @GetMapping

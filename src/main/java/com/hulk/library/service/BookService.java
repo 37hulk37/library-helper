@@ -2,7 +2,7 @@ package com.hulk.library.service;
 
 import com.hulk.library.dto.BookInfo;
 import com.hulk.library.entity.Book;
-import com.hulk.library.request.NewBookRequest;
+import com.hulk.library.utils.request.NewBookRequest;
 
 import java.util.Date;
 

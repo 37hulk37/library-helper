@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface ReaderRepository extends JpaRepository<Reader, Long> {
     boolean existsReaderByName(String name);
 
+    @Query("select r.name from Reader r where r.id = :id")
+    String getReaderNameById(Long id);
+
     @Query("select r from Reader r " +
             "join Event e on r.id = e.book.id " +
             "where e.from >= :from " +

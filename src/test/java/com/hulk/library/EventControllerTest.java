@@ -137,8 +137,6 @@ public class EventControllerTest {
                         jsonPath("[0].until").isNotEmpty(),
                         jsonPath("[0].returned").isNotEmpty()
                 );
-
-        System.out.println(1);
     }
 
     @Order(4)

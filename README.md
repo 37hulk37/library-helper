@@ -15,7 +15,8 @@ docker-compose up server
 Если хотите запустить только базу данных в докере, то менять `localhost` на `host.docker.internal` **не нужно!**
 
 ## Notes:
-1. При интеграции с Spring Security, при условии, что сервис library-helper - resource server 
+1. Книга считается прочитанной, если читатель ее вернул в библиотеку.
+2. При интеграции с Spring Security, при условии, что сервис library-helper - resource server 
 запрос на создание пользователя можно будет убрать, так как информацию о пользователе можно 
 будет получить из токена, и если пользователь - новый, то зарегистрировать его.
-2. Open Api: https://github.com/37hulk37/library-helper/blob/master/openapi.yaml
+3. Open Api: https://github.com/37hulk37/library-helper/blob/master/openapi.yaml

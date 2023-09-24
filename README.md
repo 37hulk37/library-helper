@@ -18,3 +18,4 @@ docker-compose up server
 1. При интеграции с Spring Security, при условии, что сервис library-helper - resource server 
 запрос на создание пользователя можно будет убрать, так как информацию о пользователе можно 
 будет получить из токена, и если пользователь - новый, то зарегистрировать его.
+2. Open Api: https://github.com/37hulk37/library-helper/blob/master/openapi.yaml

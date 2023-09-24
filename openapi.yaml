@@ -207,7 +207,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventInfo'
+                $ref: '#/components/schemas/Event'
     put:
       tags:
         - Events Controller
@@ -223,7 +223,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventInfo'
+                $ref: '#/components/schemas/Event'
     get:
       tags:
         - Events Controller

@@ -19,3 +19,7 @@ spring:
   mvc:
     format:
       date-time: yyyy-MM-dd
+  messages:
+    basename: "i18n/apperrors"
+    encoding: "UTF-8"
+

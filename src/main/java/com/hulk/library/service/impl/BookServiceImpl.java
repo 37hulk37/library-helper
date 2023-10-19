@@ -3,10 +3,9 @@ package com.hulk.library.service.impl;
 import com.hulk.library.dao.BookRepository;
 import com.hulk.library.dto.BookInfo;
 import com.hulk.library.entity.Book;
-import com.hulk.library.exception.NotFoundException;
+import com.hulk.library.exception.ApplicationException;
 import com.hulk.library.utils.request.NewBookRequest;
 import com.hulk.library.service.BookService;
-import com.hulk.library.exception.BadRequestException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public BookInfo createBook(NewBookRequest request) {
         if (repository.existsBookByName(request.getName())) {
-            throw new BadRequestException("Book with name " + request.getName() + " already exists");
+            throw new ApplicationException(101, request.getName());
         }
 
         var book = repository.save(new Book(
@@ -40,11 +39,11 @@ public class BookServiceImpl implements BookService {
     public BookInfo updateBook(Book request) {
         if (repository.existsBookByName(request.getName()) &&
                 !request.getName().equals(repository.getBookNameById(request.getId()))) {
-            throw new BadRequestException("Book with name " + request.getName() + " already exists");
+            throw new ApplicationException(101, request.getName());
         }
 
         if (!repository.existsById(request.getId())) {
-            throw new NotFoundException("Book with id " + request.getId() + " not found");
+            throw new ApplicationException(100, request.getId());
         }
 
         repository.save(request);
@@ -55,7 +54,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookInfo getMostPopularBook(Date from, Date until) {
         var book = repository.findMostPopularBook(from, until)
-                .orElseThrow(() -> new NotFoundException("No one read books from " + from + " until " + until));
+                .orElseThrow(() -> new ApplicationException(102, from, until));
 
         return new BookInfo(book);
     }
@@ -63,7 +62,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookInfo getBook(Long id) {
         var book = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Book with id " + id + "not found"));
+                .orElseThrow(() -> new ApplicationException(100, id));
 
         return new BookInfo(book);
     }
@@ -72,7 +71,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public void deleteBook(Long id) {
         if ( !repository.existsById(id)) {
-            throw new NotFoundException("Book with id " + id + "not exists");
+            throw new ApplicationException(100, id);
         }
 
         repository.deleteById(id);

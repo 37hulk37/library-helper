@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Getter
@@ -15,4 +14,5 @@ public class ApiException {
     private String message;
     private HttpStatus httpStatus;
     private Date timestamp;
+    private Integer code;
 }

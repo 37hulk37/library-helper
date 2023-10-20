@@ -18,19 +18,24 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {BadRequestException.class})
     public ResponseEntity<Object> handleBadRequestException(BadRequestException e) {
-        var apiException = new ApiException(e.getMessage(),
+        var apiException = new ApiException(
+                e.getMessage(),
                 HttpStatus.BAD_REQUEST,
-                Date.from(Instant.now())
+                Date.from(Instant.now()),
+                null
         );
 
         return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {NotFoundException.class})
-    public ResponseEntity<Object> handleNotFoundException(NotFoundException e) {
-        var apiException = new ApiException(e.getMessage(),
+    public ResponseEntity<Object> handleNotFoundException(
+            NotFoundException e) {
+        var apiException = new ApiException(
+                e.getMessage(),
                 HttpStatus.NOT_FOUND,
-                Date.from(Instant.now())
+                Date.from(Instant.now()),
+                null
         );
 
         return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND);
@@ -38,16 +43,35 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {ApplicationException.class})
     public ResponseEntity<Object> handleApplicationException(ApplicationException e) {
-        var apiException = new ApiException(getMessage(e.getMessage(), e.getParams()),
+        var parsedExceptionMessage = getParsedExceptionMessage(e.getMessage());
+
+        var apiException = new ApiException(
+                getLocalisedMessage(parsedExceptionMessage.code, parsedExceptionMessage.params),
                 HttpStatus.BAD_REQUEST,
-                Date.from(Instant.now())
+                Date.from(Instant.now()),
+                Integer.parseInt(parsedExceptionMessage.code)
         );
 
-        return new ResponseEntity<>(apiException, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
     }
 
-    private String getMessage(String code, Object[] params) {
+    private ParsedExceptionMessage getParsedExceptionMessage(String message) {
+        var str = message.split("/");
+
+        return new ParsedExceptionMessage(str[0], (str.length > 1 ? getParameters(str[1]) : null));
+    }
+
+    private String[] getParameters(String params) {
+        return params.substring(1, params.length()-1).split(",");
+    }
+
+    private String getLocalisedMessage(String code, Object[] params) {
         return messageSource.getMessage("error.code." + code, params, "Something went wrong", Locale.getDefault());
     }
+
+    private record ParsedExceptionMessage (
+            String code,
+            Object[] params
+    ) {}
 
 }
